@@ -1,0 +1,11 @@
+services:
+  tlfmrw-front:
+    container_name: tlfmrw
+    build: ./tlfmrw-front
+    ports:
+      - 3000:3000
+    networks:
+      - tlfmrw_network
+
+networks:
+  tlfmrw_network:
