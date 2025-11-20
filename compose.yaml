@@ -7,6 +7,17 @@ services:
     networks:
       - tlfmrw_network
 
+  supabase:
+    container_name: supabase
+    image: supabase/postgres:17.6.1.052
+    ports:
+      - "5432:5432"
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf 
+    environment:
+      POSTGRES_PASSWORD: TLFMRW1
+
+    networks:
+      - tlfmrw_network
   redis:
     container_name: redis
     image: redis:8.4
