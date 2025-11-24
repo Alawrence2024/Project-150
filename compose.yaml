@@ -30,6 +30,15 @@ services:
     volumes:
       - redis_data:/data
     command: redis-server --appendonly yes
+  
+  redis_cache:
+    container_name: redis_cache
+    image: redis:8.4
+    ports:
+      - 6380:6379
+    networks:
+      - tlfmrw_network
+    command: redis-server --save "" --appendonly no --maxmemory 512mb --maxmemory-policy allkeys-lru
 
 volumes:
   redis_data:
