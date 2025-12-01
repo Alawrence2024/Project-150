@@ -1,0 +1,78 @@
+body {
+  margin: 0;
+  height: 100vh;
+  display: grid;
+  place-items: center;
+  background: #000000;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  background-color: #000000;
+  color: white;
+  text-align: center;
+}
+
+.container {
+  display: grid;
+  place-items: center;
+}
+
+img {
+  width: 100%;
+  height: auto;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+label {
+  color: white;
+}
+
+.futuristic-input {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1.2em;
+  color: #777777;
+  background-color: #1a1a1a;
+  border: 1px solid #777777;
+  padding: 5px;
+  width: 300px;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  box-shadow: 0 0 10px #777777;
+}
+
+.futuristic-input::before {
+  content: attr(placeholder);
+  position: absolute;
+  top: 0;
+  left: 10px;
+  width: 0;
+  overflow: hidden;
+  color: #00ffcc;
+  animation: typing 3s steps(40, end) forwards;
+}
+
+.futuristic-input::after {
+  content: '|';
+  position: absolute;
+  top: 0;
+  left: 10px;
+  color: #00ffcc;
+  animation: typing 3s steps(40, end) forwards, blink 0.7s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes blink {
+  from, to { opacity: 0; }
+  50% { opacity: 1; }
+}
