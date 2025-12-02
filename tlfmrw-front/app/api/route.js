@@ -75,3 +75,45 @@ searchMangaByTitle('One Piece')
       console.log(`${index + 1}. ${manga.title} (ID: ${manga.id})`);
     });
   });
+
+  async function getTrendingManga() {
+  try {
+    const params = new URLSearchParams({
+      limit: 10,
+      'includes[]': 'cover_art', // CRITICAL: This gets the image filename
+      'order[followedCount]': 'desc', // Sort by popularity
+      'contentRating[]': 'safe', // Filter out NSFW content
+    });
+
+    const response = await fetch(`https://api.mangadex.org/manga?${params}`);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    return data.data.map((manga) => {
+      // 1. Find the cover art relationship
+      const coverArt = manga.relationships.find((rel) => rel.type === 'cover_art');
+      const fileName = coverArt ? coverArt.attributes.fileName : null;
+
+      // 2. Construct the image URL
+      // usage: https://uploads.mangadex.org/covers/[mangaId]/[fileName]
+      // We add .256.jpg to request a smaller thumbnail version for performance
+      const coverUrl = fileName
+        ? `https://uploads.mangadex.org/covers/${manga.id}/${fileName}.256.jpg`
+        : 'https://via.placeholder.com/200x300?text=No+Cover'; // Fallback
+
+      return {
+        id: manga.id,
+        title: manga.attributes.title.en || Object.values(manga.attributes.title)[0],
+        description: manga.attributes.description.en || '',
+        coverUrl: coverUrl,
+      };
+    });
+  } catch (error) {
+    console.error('Error fetching trending manga:', error);
+    return [];
+  }
+}
