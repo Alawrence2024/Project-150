@@ -12,48 +12,56 @@ const redis = new Redis({
 })
 
 function formatKey(...strings) {
-    let formated_string = ""
-    for (string in strings) {
-        formated_string += string + ":"
-    }
-    formated_string = formated_string.slice(0, formated_string.length - 1)
+    return strings.join(":")
+}
+
+function buildUserKey(username) {
+    return formatKey(KEY_NAMES.USER, username)
+}
+
+function buildUserFavoritesKey(username) {
+    return formatKey(buildUserKey(username), KEY_NAMES.FAVORITES)
+}
+
+function buildUserReadKey(username, mangaId) {
+    return formatKey(buildUserKey(username), mangaId, KEY_NAMES.READ)
 }
 
 export const DAL = {
     async CreateUser(username, password) {
-        await redis.hmset(`user:${username}`, {
+        await redis.hmset(buildUserKey(username), {
             password: password,
             created_at: Date.now()
         })
     },
 
     async GetUser(username) {
-        const userData = await redis.hgetall(`${KEY_NAMES.USER}:${username}`)
+        const userData = await redis.hgetall(buildUserKey(username))
         return Object.keys(userData).length === 0 ? null : data
     },
 
     async SetUserFavorite(username, mangaId) {
-        await redis.sadd(formatKey(KEY_NAMES.USER, username, KEY_NAMES.FAVORITES), mangaId)
+        await redis.sadd(buildUserFavoritesKey(username), mangaId)
     },
 
     async RemoveUserFavorite(username, mangaId) {
-        await redis.srem(formatKey(KEY_NAMES.USER, username, KEY_NAMES.FAVORITES), mangaId)
+        await redis.srem(buildUserFavoritesKey(username), mangaId)
     },
 
     async GetUserFavorites(username) {
-        return await redis.smembers(formatKey(KEY_NAMES.USER, username, KEY_NAMES.FAVORITES))
+        return await redis.smembers(buildUserFavoritesKey(username))
     },
 
     async CheckUserFavorite(username, mangaId) {
-        return await redis.sismember(formatKey(KEY_NAMES.USER, username, KEY_NAMES.FAVORITES), mangaId)
+        return await redis.sismember(buildUserFavoritesKey(username), mangaId)
     },
 
     async UpdateLastReadChapter(username, mangaId, chapterNum) {
-        await redis.hset(formatKey(KEY_NAMES.USER, username, mangaId, KEY_NAMES.READ), String(chapterNum))
+        await redis.hset(buildUserReadKey(username, mangaId), String(chapterNum))
     },
 
     async GetLastReadChapter(username, mangaId) {
-        return await redis.hget(formatKey(KEY_NAMES.USER, username, mangaId, KEY_NAMES.READ))
+        return await redis.hget(buildUserReadKey(username, mangaId))
     }
 }
 
