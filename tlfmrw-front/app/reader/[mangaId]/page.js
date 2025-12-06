@@ -1,44 +1,64 @@
-// app/reader/[mangaId]/page.js
-
+"use client"
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { fetchMangaDetails, getMangaCoverUrl } from '../../lib/mangadex';
 
-// Base URL for the MangaDex image server
-const MANGADEX_COVER_URL = 'https://uploads.mangadex.org/covers';
-
-/**
- * Fetches the manga details and chapters list from your internal API route.
- * @param {string} mangaId - The ID of the manga to fetch.
- */
-async function getMangaData(mangaId) {
-    // Call your internal API route
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/manga/${mangaId}`);
+export default function ChapterListPage({ params }) {
+    const { mangaId } = React.use(params);
+    const [manga, setManga] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     
-    if (!response.ok) {
-        // If your API route returns an error (e.g., 404), throw a notFound error
-        return null;
+    useEffect(() => {
+        async function loadManga() {
+            try {
+                setLoading(true);
+                setError(null);
+                const data = await fetchMangaDetails(mangaId);
+                setManga(data);
+            } catch (err) {
+                console.error('Failed to load manga:', err);
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        }
+        
+        loadManga();
+    }, [mangaId]);
+
+    if (loading) {
+        return (
+            <div style={{ padding: '40px', textAlign: 'center' }}>
+                <p>Loading manga details...</p>
+            </div>
+        );
     }
-    
-    return response.json();
-}
 
-// Next.js passes the route parameters (e.g., /reader/MANGA_ID) into the params object
-export default async function ChapterListPage({ params }) {
-    const mangaId = await params.mangaId;
-    
-    // Fetch data using the server component's async capability
-    const manga = await getMangaData(mangaId);
+    if (error) {
+        return (
+            <div style={{ padding: '40px', textAlign: 'center' }}>
+                <p style={{ color: 'red' }}>Error: {error}</p>
+                <Link href="/" style={{ color: '#450707ff' }}>
+                    &larr; Back to Home
+                </Link>
+            </div>
+        );
+    }
 
     if (!manga) {
-        notFound();
+        return (
+            <div style={{ padding: '40px', textAlign: 'center' }}>
+                <p>Manga not found</p>
+                <Link href="/" style={{ color: '#450707ff' }}>
+                    &larr; Back to Home
+                </Link>
+            </div>
+        );
     }
 
-    // Construct the full cover image URL
-    const coverUrl = manga.coverFileName 
-        ? `${MANGADEX_COVER_URL}/${manga.id}/${manga.coverFileName}.512.jpg`
-        : 'https://via.placeholder.com/512x768?text=No+Cover';
+    const coverUrl = getMangaCoverUrl(manga.id, manga.coverFileName, 'medium');
     
-    // Optional: Sort chapters to ensure numeric order
     const sortedChapters = manga.chapters.sort((a, b) => 
         (parseFloat(a.chapterNumber) || 0) - (parseFloat(b.chapterNumber) || 0)
     );
@@ -46,12 +66,12 @@ export default async function ChapterListPage({ params }) {
     return (
         <div style={{ padding: '40px', maxWidth: '1200px', margin: '0 auto' }}>
             <Link href="/" style={{ textDecoration: 'none', color: '#450707ff', marginBottom: '20px', display: 'block' }}>
-                &larr; **Back to Home**
+                &larr; Back to Home
             </Link>
 
             <header style={{ display: 'flex', gap: '40px', marginBottom: '60px' }}>
                 <img 
-                    src={coverUrl} 
+                    src={coverUrl || 'https://via.placeholder.com/512x768?text=No+Cover'} 
                     alt={manga.title} 
                     style={{ width: '250px', height: 'auto', borderRadius: '8px', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}
                 />
@@ -60,7 +80,6 @@ export default async function ChapterListPage({ params }) {
                     <p style={{ color: '#666', lineHeight: '1.6' }}>
                         {manga.description.length > 500 ? manga.description.substring(0, 500) + '...' : manga.description}
                     </p>
-                    {/* Add Author/Status/etc. here if you modify your API route to fetch it */}
                 </div>
             </header>
 
@@ -74,7 +93,6 @@ export default async function ChapterListPage({ params }) {
                         <p style={{ padding: '20px' }}>No English chapters found for this title.</p>
                     ) : (
                         sortedChapters.map(chapter => (
-                            // CRUCIAL: Link to the final Page Reader
                             <Link 
                                 key={chapter.id} 
                                 href={`/reader/${mangaId}/chapter/${chapter.id}`}
@@ -94,7 +112,8 @@ export default async function ChapterListPage({ params }) {
                                     onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#f9f9f9'}
                                 >
                                     <span>
-                                        **Vol. {chapter.volume || '?'}, Chapter {chapter.chapterNumber}** {chapter.title && `: ${chapter.title}`}
+                                        <strong>Vol. {chapter.volume || '?'}, Chapter {chapter.chapterNumber}</strong>
+                                        {chapter.title && `: ${chapter.title}`}
                                     </span>
                                     <span style={{ color: '#450707ff', fontWeight: 'bold' }}>READ &rarr;</span>
                                 </div>
