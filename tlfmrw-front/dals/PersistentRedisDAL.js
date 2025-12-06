@@ -1,15 +1,16 @@
 import Redis from "ioredis"
 
+const redis = new Redis({
+    host: "redis",
+    port: 6379
+})
+
+// #region Helper Functions
 const KEY_NAMES = {
     USER: "user",
     FAVORITES: "favorites",
     READ: "read"
 }
-
-const redis = new Redis({
-    host: "redis",
-    port: 6379
-})
 
 function formatKey(...strings) {
     return strings.join(":")
@@ -26,6 +27,7 @@ function buildUserFavoritesKey(username) {
 function buildUserReadKey(username, mangaId) {
     return formatKey(buildUserKey(username), mangaId, KEY_NAMES.READ)
 }
+// #endregion
 
 export const DAL = {
     async CreateUser(username, password) {
@@ -36,8 +38,9 @@ export const DAL = {
     },
 
     async GetUser(username) {
+        console.log("DAL.GetUser:", username)
         const userData = await redis.hgetall(buildUserKey(username))
-        return Object.keys(userData).length === 0 ? null : data
+        return Object.keys(userData).length === 0 ? null : userData
     },
 
     async SetUserFavorite(username, mangaId) {
