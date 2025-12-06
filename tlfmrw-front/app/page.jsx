@@ -2,12 +2,9 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-// FIX 1: Change import to use the variable (styles) and ensure it's a CSS Module import (e.g., landing.module.css)
 import styles from '@/styles/landing.module.css'; 
 
-// --- API Helper Function (Keep this here or move to a separate lib file) ---
 async function getTrendingManga() {
-    // ... (API logic remains unchanged)
     const params = new URLSearchParams({
         limit: 10,
         'includes[]': 'cover_art',
@@ -52,9 +49,7 @@ export default function LandingPage() {
 
     return (
         <div>
-            {/* Header Section */}
             <header>
-                {/* FIX 2: Use styles.headerContainer */}
                 <div className={styles.headerContainer}> 
                     <div className={styles.headerNav}>
                         <Link href="/">
@@ -71,35 +66,28 @@ export default function LandingPage() {
                 </div>
             </header>
 
-            {/* Main Content */}
             <main className={styles.mainContent}>
-                {/* Hero Section */}
                 <section className={styles.heroSection}>
                     <h2>Welcome to MangaApp</h2>
                     <p>Discover and read your favorite manga</p>
                 </section>
 
-                {/* --- POPULAR SECTION (5x2 GRID) --- */}
                 <section className={styles.popularSection}>
                     <h3>Popular This Week</h3>
                     
                     {loading ? (
                         <p>Loading trending manga...</p>
                     ) : (
-                        // FIX 2: Use styles.mangaGrid
                         <div className={styles.mangaGrid}>
                             
                             {trendingManga.map((manga) => (
-                                // STEP 3: Wrap the card in a Link component
                                 <Link 
                                     key={manga.id} 
-                                    href={`/reader/${manga.id}`} // Dynamic route to your reader page
-                                    style={{ textDecoration: 'none', color: 'inherit' }} // Remove default link styling
+                                    href={`/reader/${manga.id}`}
+                                    style={{ textDecoration: 'none', color: 'inherit' }}
                                 >
-                                    {/* FIX 2: Use styles.mangaCard */}
                                     <div className={styles.mangaCard}>
                                         
-                                        {/* Image Container */}
                                         <div className={styles.coverImageContainer}>
                                             <img 
                                                 src={manga.coverUrl} 
@@ -108,12 +96,10 @@ export default function LandingPage() {
                                             />
                                         </div>
                                         
-                                        {/* Title */}
                                         <h4 className={styles.mangaTitle}>
                                             {manga.title}
                                         </h4>
                                         
-                                        {/* Description */}
                                         <p className={styles.mangaDescription}>
                                             {manga.description}
                                         </p>
@@ -125,7 +111,6 @@ export default function LandingPage() {
                     )}
                 </section>
 
-                {/* Call to Action Section (Assuming you want to keep the light background) */}
                 <section style={{ textAlign: 'center', padding: '40px 20px', background: '#f5f5f5' }}>
                     <h3>Start Reading Today</h3>
                     <p>Join thousands of manga readers</p>
@@ -137,7 +122,6 @@ export default function LandingPage() {
                 </section>
             </main>
 
-            {/* Footer */}
             <footer className={styles.footerContainer}>
                 <p>© 2024 TLFMRW. All rights reserved.</p>
             </footer>

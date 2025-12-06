@@ -4,16 +4,9 @@ import "@/styles/signup.css";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-
-
-
-
-
 export default function login() {
-
 const [username, setUsername] = useState("");
 const [password, setPassword] = useState("");
-const [error, setError] = useState("");
 
   return (
     <main>

@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-  ],
+, "app/reader/[mangaId]/chapter/[chapterId]/page.jsx"  ],
   "exclude": ["node_modules"]
 }

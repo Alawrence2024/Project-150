@@ -31,19 +31,14 @@ const [covers, setCovers] = useState<Manga[]>([]);
             {covers.map((manga, i) => (
               <a>
                 <img
-                key={i}
-                src={manga.cover}
-                width={200}
-                height={300}
-                alt={manga.title}
-                className="cover"
-              />
+                  key={i}
+                  src={manga.cover}
+                  width={200}
+                  height={300}
+                  alt={manga.title}
+                  className="cover"
+                />
               </a>
-
-
-              
-
-              
             ))}
           </div>
         </div>
