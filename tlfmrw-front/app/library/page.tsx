@@ -9,11 +9,7 @@ interface Manga {
   cover: string;
 }
 
-
-
-
 export default function library() {
-
 const [covers, setCovers] = useState<Manga[]>([]);
 
   useEffect(() => {
@@ -26,9 +22,6 @@ const [covers, setCovers] = useState<Manga[]>([]);
   }, []);
 
   return (
-
-  
-
     <main>
       <div className="master_container">
         <div className="sidebar">
@@ -57,9 +50,7 @@ const [covers, setCovers] = useState<Manga[]>([]);
         <div className="sidebar">
         </div>
       </div>
-      
     </main>
   );
 }
-
 
