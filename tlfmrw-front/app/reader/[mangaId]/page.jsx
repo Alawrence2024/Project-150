@@ -92,7 +92,10 @@ export default function ChapterListPage({ params }) {
                     {sortedChapters.length === 0 ? (
                         <p style={{ padding: '20px' }}>No English chapters found for this title.</p>
                     ) : (
-                        sortedChapters.map(chapter => (
+                        sortedChapters.map(chapter => {
+
+                            console.log('Chapter ID:', chapter.id, 'Chapter Number:', chapter.chapterNumber)
+                            return (
                             <Link 
                                 key={chapter.id} 
                                 href={`/reader/${mangaId}/chapter/${chapter.id}`}
@@ -118,7 +121,7 @@ export default function ChapterListPage({ params }) {
                                     <span style={{ color: '#450707ff', fontWeight: 'bold' }}>READ &rarr;</span>
                                 </div>
                             </Link>
-                        ))
+                        )})
                     )}
                 </div>
             </section>

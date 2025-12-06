@@ -9,13 +9,8 @@ interface Manga {
   pages: string[];
 }
 
-
-
-
 export default function library() {
-
 const [pages, setPages] = useState<Manga[]>([]);
-
 
   useEffect(() => {
     async function fetchPages() {
@@ -27,9 +22,6 @@ const [pages, setPages] = useState<Manga[]>([]);
   }, []);
 
   return (
-
-  
-
     <main>
       <div className="master_container">
         <div className="sidebar">

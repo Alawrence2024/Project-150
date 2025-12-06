@@ -1,4 +1,3 @@
-// Fetch manga by ID (no authentication required)
 async function getMangaById(mangaId) {
   try {
     const response = await fetch(`https://api.mangadex.org/manga/${mangaId}`);
@@ -9,13 +8,11 @@ async function getMangaById(mangaId) {
     
     const data = await response.json();
     
-    // Extract the title (titles can be in multiple languages)
     const title = data.data.attributes.title;
     
     return {
       id: data.data.id,
       title: title,
-      // Get English title if available, otherwise get first available
       titleEnglish: title.en || Object.values(title)[0],
       altTitles: data.data.attributes.altTitles,
       description: data.data.attributes.description,
@@ -28,12 +25,11 @@ async function getMangaById(mangaId) {
   }
 }
 
-// Example: Search manga by title (no authentication required)
 async function searchMangaByTitle(searchTitle) {
   try {
     const params = new URLSearchParams({
       title: searchTitle,
-      limit: 10 // Limit results to 10
+      limit: 10
     });
     
     const response = await fetch(`https://api.mangadex.org/manga?${params}`);
@@ -44,7 +40,6 @@ async function searchMangaByTitle(searchTitle) {
     
     const data = await response.json();
     
-    // Map results to simplified format
     return data.data.map(manga => ({
       id: manga.id,
       title: manga.attributes.title.en || Object.values(manga.attributes.title)[0],
@@ -58,62 +53,58 @@ async function searchMangaByTitle(searchTitle) {
   }
 }
 
-// Usage examples:
+// getMangaById('a96676e5-8ae2-425e-b549-7f15dd34a6d8')
+//   .then(manga => {
+//     console.log('Manga Title:', manga.titleEnglish);
+//     console.log('Full data:', manga);
+//   });
 
-// Get specific manga by ID
-getMangaById('a96676e5-8ae2-425e-b549-7f15dd34a6d8')
-  .then(manga => {
-    console.log('Manga Title:', manga.titleEnglish);
-    console.log('Full data:', manga);
-  });
+// searchMangaByTitle('One Piece')
+//   .then(results => {
+//     console.log('Found', results.length, 'manga(s)');
+//     results.forEach((manga, index) => {
+//       console.log(`${index + 1}. ${manga.title} (ID: ${manga.id})`);
+//     });
+//   });
 
-// Search for manga by title
-searchMangaByTitle('One Piece')
-  .then(results => {
-    console.log('Found', results.length, 'manga(s)');
-    results.forEach((manga, index) => {
-      console.log(`${index + 1}. ${manga.title} (ID: ${manga.id})`);
-    });
-  });
+//   async function getTrendingManga() {
+//   try {
+//     const params = new URLSearchParams({
+//       limit: 10,
+//       'includes[]': 'cover_art', // CRITICAL: This gets the image filename
+//       'order[followedCount]': 'desc', // Sort by popularity
+//       'contentRating[]': 'safe', // Filter out NSFW content
+//     });
 
-  async function getTrendingManga() {
-  try {
-    const params = new URLSearchParams({
-      limit: 10,
-      'includes[]': 'cover_art', // CRITICAL: This gets the image filename
-      'order[followedCount]': 'desc', // Sort by popularity
-      'contentRating[]': 'safe', // Filter out NSFW content
-    });
+//     const response = await fetch(`https://api.mangadex.org/manga?${params}`);
 
-    const response = await fetch(`https://api.mangadex.org/manga?${params}`);
+//     if (!response.ok) {
+//       throw new Error(`HTTP error! status: ${response.status}`);
+//     }
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+//     const data = await response.json();
 
-    const data = await response.json();
+//     return data.data.map((manga) => {
+//       // 1. Find the cover art relationship
+//       const coverArt = manga.relationships.find((rel) => rel.type === 'cover_art');
+//       const fileName = coverArt ? coverArt.attributes.fileName : null;
 
-    return data.data.map((manga) => {
-      // 1. Find the cover art relationship
-      const coverArt = manga.relationships.find((rel) => rel.type === 'cover_art');
-      const fileName = coverArt ? coverArt.attributes.fileName : null;
+//       // 2. Construct the image URL
+//       // usage: https://uploads.mangadex.org/covers/[mangaId]/[fileName]
+//       // We add .256.jpg to request a smaller thumbnail version for performance
+//       const coverUrl = fileName
+//         ? `https://uploads.mangadex.org/covers/${manga.id}/${fileName}.256.jpg`
+//         : 'https://via.placeholder.com/200x300?text=No+Cover'; // Fallback
 
-      // 2. Construct the image URL
-      // usage: https://uploads.mangadex.org/covers/[mangaId]/[fileName]
-      // We add .256.jpg to request a smaller thumbnail version for performance
-      const coverUrl = fileName
-        ? `https://uploads.mangadex.org/covers/${manga.id}/${fileName}.256.jpg`
-        : 'https://via.placeholder.com/200x300?text=No+Cover'; // Fallback
-
-      return {
-        id: manga.id,
-        title: manga.attributes.title.en || Object.values(manga.attributes.title)[0],
-        description: manga.attributes.description.en || '',
-        coverUrl: coverUrl,
-      };
-    });
-  } catch (error) {
-    console.error('Error fetching trending manga:', error);
-    return [];
-  }
-}
+//       return {
+//         id: manga.id,
+//         title: manga.attributes.title.en || Object.values(manga.attributes.title)[0],
+//         description: manga.attributes.description.en || '',
+//         coverUrl: coverUrl,
+//       };
+//     });
+//   } catch (error) {
+//     console.error('Error fetching trending manga:', error);
+//     return [];
+//   }
+// }

@@ -1,6 +1,6 @@
-import { DAL } from "../../../dals/PersistentRedisDAL"
-import { C_DAL } from "../../../dals/CachingRedisDal"
-import { ENCRYPT } from "../../../encryption/encrypt"
+import { DAL } from "@/app/dals/PersistentRedisDAL"
+import { C_DAL } from "@/app/dals/CachingRedisDal"
+import { ENCRYPT } from "@/app/encryption/encrypt"
 
 export async function POST(request) {
     const { username, password } = await request.json()
