@@ -22,9 +22,6 @@ const [pages, setPages] = useState<Manga[]>([]);
   }, []);
 
   return (
-
-  
-
     <main>
       <div className="master_container">
         <div className="sidebar">
