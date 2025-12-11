@@ -1,17 +1,21 @@
 FROM node:20 AS builder
 WORKDIR /app
+
 COPY package*.json ./
 RUN npm ci
+
 COPY . .
 RUN npm run build
 
-FROM node:20 AS runner
+FROM node:20-slim AS runner
 WORKDIR /app
 
-COPY --from=builder /app/package*.json ./
-RUN npm ci --only=production
-COPY --from=builder /app/.next ./.next
+ENV NEXT_TELEMETRY_DISABLED 1
+
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 
-EXPOSE 3000
-CMD ["npm", "start"]
+EXPOSE 10000
+
+CMD ["node", "server.js"]

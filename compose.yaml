@@ -7,19 +7,6 @@ services:
     networks:
       - tlfmrw_network
 
-  supabase:
-    container_name: supabase
-    image: supabase/postgres:17.6.1.052
-    ports:
-      - "5432:5432"
-    command: postgres -c config_file=/etc/postgresql/postgresql.conf 
-    environment:
-      POSTGRES_PASSWORD: TLFMRW1
-    networks:
-      - tlfmrw_network
-    volumes:
-      - supabase_data:/var/lib/postgresql/data
-
   redis:
     container_name: redis
     image: redis:8.4
@@ -30,19 +17,9 @@ services:
     volumes:
       - redis_data:/data
     command: redis-server --appendonly yes
-  
-  redis_cache:
-    container_name: redis_cache
-    image: redis:8.4
-    ports:
-      - 6380:6379
-    networks:
-      - tlfmrw_network
-    command: redis-server --save "" --appendonly no --maxmemory 512mb --maxmemory-policy allkeys-lru
 
 volumes:
   redis_data:
-  supabase_data:
 
 networks:
   tlfmrw_network:
