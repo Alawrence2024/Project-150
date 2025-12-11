@@ -35,11 +35,12 @@ export default function ChapterListPage({ params }) {
     useEffect(() => {
         async function detectFavorite() {
             const favoriteResponse = await fetch(`/api/favorite?username=${userData}`)
-            const favorites = await favoriteResponse.json()
-            setFavorited(favorites.contains(manga.id))
+            const data = await favoriteResponse.json()
+            setFavorited(data.favorites.includes(manga.id))
         }
+        if (!isLoggedIn) return
         detectFavorite()
-    }, [])
+    }, [manga])
 
 
     async function addFavorite(mangaId) {
