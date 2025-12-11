@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import styles from '@/styles/landing.module.css'
-import { NavigationBar } from "../app/components/NavigationBar"
 
 async function getTrendingManga() {
     const params = new URLSearchParams({
@@ -14,7 +13,8 @@ async function getTrendingManga() {
     });
 
     try {
-        const response = await fetch(`https://api.mangadex.org/manga?${params}`);
+        const endpoint = `/manga?${params}`;
+        const response = await fetch(`/api/mangadex?endpoint=${encodeURIComponent(endpoint)}`);
         const data = await response.json();
 
         return data.data.map((manga) => {
@@ -50,10 +50,6 @@ export default function LandingPage() {
 
     return (
         <div>
-            {/* <header>
-                <NavigationBar />
-            </header> */}
-
             <main className={styles.mainContent}>
                 <section className={styles.heroSection}>
                     <h2>Welcome to MangaApp</h2>
