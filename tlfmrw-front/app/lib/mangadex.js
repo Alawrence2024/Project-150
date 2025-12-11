@@ -6,6 +6,7 @@ export async function fetchMangaDetails(mangaId) {
         const mangaResponse = await fetch(mangaUrl, {
             headers: {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+                'Access-Control-Allow-Origin' : "*"
             },
         })
 
@@ -26,6 +27,7 @@ export async function fetchMangaDetails(mangaId) {
         const chapterResponse = await fetch(chapterUrl, {
             headers: {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+                'Access-Control-Allow-Origin' : "*"
             },
         })
 
@@ -79,6 +81,7 @@ export async function fetchChapterPages(chapterId) {
         const response = await fetch(chapterUrl, {
             headers: {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+                'Access-Control-Allow-Origin' : "*"
             },
         })
 
