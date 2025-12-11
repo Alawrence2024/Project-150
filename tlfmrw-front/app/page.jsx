@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import styles from '@/styles/landing.module.css'; 
+import styles from '@/styles/landing.module.css'
+import { NavigationBar } from "../app/components/NavigationBar"
 
 async function getTrendingManga() {
     const params = new URLSearchParams({
@@ -49,22 +50,9 @@ export default function LandingPage() {
 
     return (
         <div>
-            <header>
-                <div className={styles.headerContainer}> 
-                    <div className={styles.headerNav}>
-                        <Link href="/">
-                            <h1 className={styles.logoTitle}>TLFMRW</h1>
-                        </Link>
-                        <nav className={styles.navLinks}>
-                            <Link href="/library">Library</Link>
-                            <Link href="/search">Search</Link>
-                        </nav>
-                    </div>
-                    <div>
-                        <Link href="/login">Sign In</Link>
-                    </div>
-                </div>
-            </header>
+            {/* <header>
+                <NavigationBar />
+            </header> */}
 
             <main className={styles.mainContent}>
                 <section className={styles.heroSection}>
@@ -114,7 +102,7 @@ export default function LandingPage() {
                 <section style={{ textAlign: 'center', padding: '40px 20px', background: '#f5f5f5' }}>
                     <h3>Start Reading Today</h3>
                     <p>Join thousands of manga readers</p>
-                    <Link href="/signin">
+                    <Link href="/signup">
                         <button style={{ padding: '10px 20px', fontSize: '16px', cursor: 'pointer' }}>
                             Get Started
                         </button>

@@ -1,5 +1,5 @@
-import { DAL } from "@/app/dals/PersistentRedisDAL"
-import { ENCRYPT } from "@/app/encryption/encrypt"
+import { DAL } from "../../../dals/PersistentRedisDAL"
+import { ENCRYPT } from "../../../encryption/encrypt"
 
 export async function POST(request) {
     const { username, password } = await request.json()
