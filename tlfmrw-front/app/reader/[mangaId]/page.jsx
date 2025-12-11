@@ -12,6 +12,7 @@ export default function ChapterListPage({ params }) {
     const [manga, setManga] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [favorited, setFavorited] = useState(false)
     
     useEffect(() => {
         async function loadManga() {
@@ -31,14 +32,36 @@ export default function ChapterListPage({ params }) {
         loadManga()
     }, [mangaId])
 
+    useEffect(() => {
+        async function detectFavorite() {
+            const favoriteResponse = await fetch(`/api/favorite?username=${userData}`)
+            const favorites = await favoriteResponse.json()
+            setFavorited(favorites.contains(manga.id))
+        }
+        detectFavorite()
+    }, [])
+
+
     async function addFavorite(mangaId) {
         await fetch("/api/favorite", {
             method: "POST",
             body: JSON.stringify({
                 username: userData,
-                chapterId: mangaId
+                mangaId: mangaId
             })
         })
+        setFavorited(true)
+    }
+
+    async function removeFavorite(mangaId) {
+        await fetch("/api/favorite", {
+            method: "DELETE",
+            body: JSON.stringify({
+                username: userData,
+                mangaId: mangaId
+            })
+        })
+        setFavorited(false)
     }
 
     if (loading) {
@@ -100,7 +123,13 @@ export default function ChapterListPage({ params }) {
                 isLoggedIn
                 ?
                 <div>
-                    <button className='border rounded pl-1 pr-1' onClick={() => addFavorite(manga.id)}>Favorite</button>
+                    {
+                        !favorited
+                        ?
+                        <button className='border rounded pl-1 pr-1' onClick={() => addFavorite(manga.id)}>Favorite</button>
+                        :
+                        <button className='border rounded pl-1 pr-1' onClick={() => removeFavorite(manga.id)}>Remove Favorite</button>
+                    }
                 </div>
                 :
                 <></>
