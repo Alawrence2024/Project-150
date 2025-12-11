@@ -15,24 +15,7 @@ export async function POST(request) {
 }
 
 export async function DELETE(request) {
-<<<<<<< HEAD
-    const { username, mangaID } = await request.json()
-    await DAL.RemoveUserFavorite(username, mangaID)
-}
-=======
-<<<<<<< Updated upstream
-
-}
-=======
-<<<<<<< HEAD
-    const { username, mangaID } = await request.json()
-    await DAL.RemoveUserFavorite(username, mangaID)
-}
-=======
     const { username, mangaId } = await request.json()
     await DAL.RemoveUserFavorite(username, mangaId)
     return new Response()
 }
->>>>>>> a0e12388baf13224665be7ce6513aa2cdf260054
->>>>>>> Stashed changes
->>>>>>> 09a49e7 (library stuff)
