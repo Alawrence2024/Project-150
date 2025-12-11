@@ -5,6 +5,7 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
+ENV REDIS_URL="redis://localhost:6379"
 RUN npm run build
 
 FROM node:20-slim AS runner

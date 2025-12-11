@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { DAL } from "../../../dals/PersistentRedisDAL";
 
 export async function GET(request) {

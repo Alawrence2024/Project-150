@@ -4,7 +4,8 @@ const redis = process.env.REDIS_URL
   ? new Redis(process.env.REDIS_URL)
   : new Redis({
       host: "redis",
-      port: 6379
+      port: 6379,
+      lazyConnect: true
     })
 
 // #region Helper Functions
