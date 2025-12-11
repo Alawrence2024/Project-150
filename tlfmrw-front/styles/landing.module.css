@@ -1,5 +1,3 @@
-
-
 /* --- Layout Container Styles --- */
 
 .headerContainer {
@@ -37,9 +35,9 @@
 
 .mangaGrid {
     display: grid;
-    /* 5 columns per row */
-    grid-template-columns: repeat(5, 1fr); 
+    grid-template-columns: repeat(5, minmax(0, 1fr)); /* ensures equal width */
     gap: 20px;
+    align-items: start; /* align all items to the top */
 }
 
 .callToActionSection {
@@ -72,6 +70,11 @@
     overflow: hidden;
     background-color: #222222; 
     color: white; 
+
+    /* --- NEW: make layout consistent --- */
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
 }
 
 .coverImageContainer {
@@ -79,6 +82,7 @@
     margin-bottom: 10px;
     overflow: hidden;
     border-radius: 4px;
+    flex-shrink: 0; /* prevent shrinking */
 }
 
 .coverImage {
@@ -94,6 +98,7 @@
     display: -webkit-box;
     -webkit-line-clamp: 1; 
     -webkit-box-orient: vertical;
+    flex-shrink: 0; /* prevent title from stretching */
 }
 
 .mangaDescription {
