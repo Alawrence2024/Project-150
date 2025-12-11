@@ -1,0 +1,55 @@
+.container {
+  display: grid;
+  place-items: center;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
+.futuristic_input {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1.2em;
+  color: #777777;
+  background-color: #1a1a1a;
+  border: 1px solid #777777;
+  padding: 5px;
+  width: 300px;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  box-shadow: 0 0 10px #777777;
+}
+
+.futuristic_input::before {
+  content: attr(placeholder);
+  position: absolute;
+  top: 0;
+  left: 10px;
+  width: 0;
+  overflow: hidden;
+  color: #00ffcc;
+  animation: typing 3s steps(40, end) forwards;
+}
+
+.futuristic_input::after {
+  content: '|';
+  position: absolute;
+  top: 0;
+  left: 10px;
+  color: #00ffcc;
+  animation: typing 3s steps(40, end) forwards, blink 0.7s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes blink {
+  from, to { opacity: 0; }
+  50% { opacity: 1; }
+}

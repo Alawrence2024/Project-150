@@ -31,10 +31,16 @@ function buildUserReadKey(username, mangaId) {
 
 export const DAL = {
     async CreateUser(username, password) {
-        await redis.hmset(buildUserKey(username), {
+        const key = buildUserKey(username)
+
+        const exists = await redis.exists(key)
+        if (exists) return false
+        
+        await redis.hmset(key, {
             password: password,
             created_at: Date.now()
         })
+        return true
     },
 
     async GetUser(username) {

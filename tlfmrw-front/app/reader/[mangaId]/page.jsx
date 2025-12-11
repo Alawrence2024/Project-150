@@ -2,9 +2,13 @@
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { fetchMangaDetails, getMangaCoverUrl } from '../../lib/mangadex';
+import { useAuth } from '../../lib/auth';
+import { setUser } from '../../lib/user';
 
 export default function ChapterListPage({ params }) {
     const { mangaId } = React.use(params);
+    const { isLoggedIn, setLoggedIn } = useAuth()
+    const { userData, _ } = setUser()
     const [manga, setManga] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -24,15 +28,25 @@ export default function ChapterListPage({ params }) {
             }
         }
         
-        loadManga();
-    }, [mangaId]);
+        loadManga()
+    }, [mangaId])
+
+    async function addFavorite(mangaId) {
+        await fetch("/api/favorite", {
+            method: "POST",
+            body: JSON.stringify({
+                username: userData,
+                chapterId: mangaId
+            })
+        })
+    }
 
     if (loading) {
         return (
             <div style={{ padding: '40px', textAlign: 'center' }}>
                 <p>Loading manga details...</p>
             </div>
-        );
+        )
     }
 
     if (error) {
@@ -43,7 +57,7 @@ export default function ChapterListPage({ params }) {
                     &larr; Back to Home
                 </Link>
             </div>
-        );
+        )
     }
 
     if (!manga) {
@@ -54,14 +68,14 @@ export default function ChapterListPage({ params }) {
                     &larr; Back to Home
                 </Link>
             </div>
-        );
+        )
     }
 
     const coverUrl = getMangaCoverUrl(manga.id, manga.coverFileName, 'medium');
     
     const sortedChapters = manga.chapters.sort((a, b) => 
         (parseFloat(a.chapterNumber) || 0) - (parseFloat(b.chapterNumber) || 0)
-    );
+    )
 
     return (
         <div style={{ padding: '40px', maxWidth: '1200px', margin: '0 auto' }}>
@@ -82,6 +96,15 @@ export default function ChapterListPage({ params }) {
                     </p>
                 </div>
             </header>
+            {
+                isLoggedIn
+                ?
+                <div>
+                    <button className='border rounded pl-1 pr-1' onClick={() => addFavorite(manga.id)}>Favorite</button>
+                </div>
+                :
+                <></>
+            }
 
             <section>
                 <h2 style={{ borderBottom: '2px solid #eee', paddingBottom: '10px' }}>
@@ -126,5 +149,5 @@ export default function ChapterListPage({ params }) {
                 </div>
             </section>
         </div>
-    );
+    )
 }
