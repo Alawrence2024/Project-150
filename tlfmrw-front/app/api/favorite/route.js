@@ -1,3 +1,4 @@
+import { use } from "react";
 import { DAL } from "../../../dals/PersistentRedisDAL";
 
 export async function GET(request) {
@@ -14,5 +15,6 @@ export async function POST(request) {
 }
 
 export async function DELETE(request) {
-
+    const { username, mangaID } = await request.json()
+    await DAL.RemoveUserFavorite(username, mangaID)
 }
