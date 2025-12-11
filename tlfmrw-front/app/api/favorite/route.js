@@ -8,11 +8,13 @@ export async function GET(request) {
 }
 
 export async function POST(request) {
-    const { username, chapterId } = await request.json()
-    await DAL.SetUserFavorite(username, chapterId)
+    const { username, mangaId } = await request.json()
+    await DAL.SetUserFavorite(username, mangaId)
     return new Response()
 }
 
 export async function DELETE(request) {
-
+    const { username, mangaId } = await request.json()
+    await DAL.RemoveUserFavorite(username, mangaId)
+    return new Response()
 }
