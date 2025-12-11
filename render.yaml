@@ -2,7 +2,7 @@ services:
   - type: web
     name: tlfmrw-front
     env: docker
-    dockerfilePath: ./Dockerfile
+    dockerfilePath: ./tlfmrw-front/Dockerfile
     dockerContext: ./tlfmrw-front
     plan: free
     envVars:
