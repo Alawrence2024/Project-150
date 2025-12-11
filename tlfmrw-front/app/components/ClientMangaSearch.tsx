@@ -1,6 +1,5 @@
 'use client';
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { SearchResultsGrid } from './SearchResultsGrid';
 import { MangaSearch } from './MangaSearch';
@@ -17,10 +16,9 @@ interface Manga {
   }>;
 }
 
-export function ClientMangaSearch() {
+function SearchContent() {
   const searchParams = useSearchParams();
   const query = searchParams.get('q') || '';
-
   const [mangaResults, setMangaResults] = useState<Manga[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -32,11 +30,11 @@ export function ClientMangaSearch() {
       }
 
       setIsLoading(true);
-
       try {
         const res = await fetch(
           `https://api.mangadex.org/manga?title=${encodeURIComponent(query)}&limit=25&includes[]=cover_art`
         );
+        
         if (!res.ok) throw new Error('Failed to fetch');
         const data = await res.json();
         setMangaResults(data.data || []);
@@ -53,9 +51,7 @@ export function ClientMangaSearch() {
 
   return (
     <div>
-      {/* Search bar */}
       <MangaSearch initialQuery={query} />
-
       <div className="mt-8">
         {query ? (
           <h2 className="text-[rgba(69,7,7,1)] text-2xl font-semibold mb-4">
@@ -67,12 +63,10 @@ export function ClientMangaSearch() {
           </h2>
         )}
 
-        {/* Loading */}
         {isLoading && (
           <p className="text-xl text-indigo-600 font-medium">Searching MangaDex...</p>
         )}
 
-        {/* Results */}
         {!isLoading && mangaResults.length > 0 && (
           <SearchResultsGrid mangaList={mangaResults} />
         )}
@@ -82,5 +76,13 @@ export function ClientMangaSearch() {
         )}
       </div>
     </div>
+  );
+}
+
+export function ClientMangaSearch() {
+  return (
+    <Suspense fallback={<div>Loading search...</div>}>
+      <SearchContent />
+    </Suspense>
   );
 }
